@@ -14,27 +14,18 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                script {
-                    def remote = [:]
-                    remote.name = 'LocalServer'
-                    remote.host = 'localhost'
-                    remote.user = 'your-username'
-                    remote.password = 'your-password'
-                    remote.allowAnyHosts = true
-
-                    sshPublisher(publishers: [sshPublisherDesc(
-                        configName: 'LocalServer',
-                        transfers: [sshTransfer(
-                            sourceFiles: '**/*.html',
-                            removePrefix: '',
-                            remoteDirectory: 'C:/nginx/html',
-                            execCommand: 'nginx -s reload'
-                        )],
-                        usePromotionTimestamp: false,
-                        useWorkspaceInPromotion: false,
-                        verbose: true
-                    )])
-                }
+                cifsPublisher(publishers: [cifsPublisherDesc(
+                    configName: 'LocalServer',
+                    transfers: [cifsTransfer(
+                        sourceFiles: '**/*.html',
+                        removePrefix: '',
+                        remoteDirectory: 'html',
+                        execCommand: 'nginx -s reload'
+                    )],
+                    usePromotionTimestamp: false,
+                    useWorkspaceInPromotion: false,
+                    verbose: true
+                )])
             }
         }
     }
